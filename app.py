@@ -6,6 +6,7 @@ from flask_session import Session
 from tempfile import mkdtemp
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
+from datetime import datetime
 
 from helpers import apology, login_required, validate, greeting
 
@@ -36,6 +37,45 @@ db = SQL("sqlite:///focus.db")
 
 # Make sure API key is set --> Look into adding API integration with Google Calender later
 #if not os.environ.get("API_KEY"): raise RuntimeError("API_KEY not set")
+
+@app.route("/delete/<int:task_id>")
+@login_required
+def delete(task_id):
+    db.execute("DELETE FROM tasks WHERE task_id = ?", task_id)
+    return redirect("/tasks")
+
+@app.route("/tasks", methods=["GET", "POST"])
+@login_required
+def tasks():
+    db.execute("CREATE TABLE IF NOT EXISTS tasks(task TEXT NOT NULL, comment TEXT NOT NULL, user_id TEXT NOT NULL, task_id INTEGER PRIMARY KEY AUTOINCREMENT, priority INTEGER NOT NULL, record TEXT NOT NULL, deadline TEXT NOT NULL)")
+    tasks = db.execute("SELECT * FROM tasks WHERE user_id = ? ORDER BY priority DESC", session["user_id"])
+    print(tasks)
+
+    if request.method == "POST":
+
+        # get user input
+        task = request.form.get("task")
+        comments = request.form.get("comments")
+        priority = request.form.get("priority")
+        deadline = request.form.get("deadline")
+
+        # validate user input
+        try:
+            priority = int(priority)
+        except:
+            flash("Please enter in a value from 1 to 5")
+            pass
+
+        # check to see if task database exists, then store task into database
+        db.execute("INSERT INTO tasks(task, comment, user_id, priority, record, deadline) VALUES (?,?,?,?, datetime('now','localtime'),?)", task, comments, session["user_id"], priority, deadline)
+        flash("Task added succesfully!")
+    
+        return redirect("/tasks")
+
+    else:
+        return render_template("tasks.html", tasks=tasks)
+
+# GENERAL APP FUNCTIONALITY 
 
 @app.route("/")
 @login_required
