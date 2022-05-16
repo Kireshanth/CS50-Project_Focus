@@ -6,52 +6,53 @@
 
 
 {% block main %}
-<form action="/tasks" method="post">
-    <div class="mb-3">
-        <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="tfield" name="task" placeholder="Task Name" type="text">
-    </div>
-    <div class="mb-3">
-        <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="tfield" name="comments" placeholder="Add any comments" type="text">
-    </div>
-    <div class="mb-3">
-        <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="tfield" name="priority" required placeholder="3" min = "1" max = "5" type="number">
-    </div>
-    <div class="mb-3">
-        <label>
-            <p>Enter Date: </p>
-            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="tfield" name="deadline" required type="date">
-        </label>
-    </div>
 
-    <button class="btn btn-primary" type="submit">Add</button>
-</form>
-<thead>
-    <tr>
-        <th>Task</th>
-        <th>Comments</th>
-        <th>Priority</th>
-        <th>Recorded</th>
-        <th>Due Date</th>
-    </tr>
-    <br>
-</thead>
-<tbody>
-    {% for task in tasks %}
-    <tr>
-        <td>{{ task["task"] }}</td>
-        <td>{{ task["comment"] }}</td>
-        <td>{{ task["priority"] }}</td>
-        <td>{{ task["record"] }}</td>
-        <td>{{ task["deadline"] }}</td>
-        
-        <a href="/delete/{{ task['task_id'] }}">
-            <p>Delete</p>
-        </a>
-    </tr>
-    <br>
-    {% endfor %}
- 
-</tbody>
+    <form action="/tasks" method="post" class="form_table">
+        <div class="task_field">
+            <input autocomplete="off" autofocus name="task" placeholder="Task Name" type="text">
+        </div>
+        <div class="task_field">
+            <input autocomplete="off" name="comments" placeholder="Add any comments" type="text">
+        </div>
+        <div class="task_field">
+            <input autocomplete="off" name="priority" required placeholder="3" min = "1" max = "5" type="number">
+        </div>
+        <div class="task_field">
+            <label>
+                <label>Enter Date: </label>
+                <input autocomplete="off" name="deadline" required type="date">
+            </label>
+        </div>
+        <button type="submit">Add</button>
+    </form>
+<div class="titles">
+    <thead>
+        <tr>
+            <th class="title">Task</th>
+            <th class="title">Comments</th>
+            <th class="title">Priority</th>
+            <th class="title">Recorded</th>
+            <th class="title">Due Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for task in tasks %}
+        <tr>
+            <td>{{ task["task"] }}</td>
+            <td>{{ task["comment"] }}</td>
+            <td>{{ task["priority"] }}</td>
+            <td>{{ task["record"] }}</td>
+            <td>{{ task["deadline"] }}</td>
+            
+            <a href="/delete/{{ task['task_id'] }}">
+                <p>Delete</p>
+            </a>
+        </tr>
+        <br>
+        {% endfor %}
+    
+    </tbody>
+</div>
 
 {% endblock %}
 
